@@ -3,6 +3,9 @@ name = "wundertuete"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+
+# Special config for the binary because src dir is called Quelltext and not src
+[[bin]]
+name = "wundertuete"
+path = "Quelltext/main.rs"
