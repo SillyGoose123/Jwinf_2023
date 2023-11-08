@@ -1,6 +1,6 @@
 use std::panic;
 use std::process::exit;
-use wundertuete::{int_from_str, read_int};
+use std::io::Write;
 
 //the struct for the input
 struct Input {
@@ -12,7 +12,7 @@ fn main() {
     //custom error handling
     panic::set_hook(Box::new(|info| {
         //print the error
-        eprintln!("Error: {}{}", &info.to_string().split("'").collect::<Vec<_>>()[1], &info.to_string().split("'").collect::<Vec<_>>()[2]);
+        eprintln!("Error: {}", &info.to_string().split("'").collect::<Vec<_>>()[1]);
 
         // kill the program with exit code 1
         exit(1);
@@ -33,6 +33,15 @@ fn main() {
 
         //split the file content into a vector of strings
         let file_content = file_content.trim().split("\n").collect::<Vec<_>>();
+
+        //check if the file is formatted right
+        if file_content.len() < 3 {
+            panic!("Given file is formatted wrong.");
+        }
+
+        if int_from_str(&file_content[0]) <= 0  || file_content.contains(&"0") {
+            panic!("File input makes no sense.");
+        }
 
         //get the game_types from the file
         let mut game_types: Vec<i64> = Vec::new();
@@ -158,4 +167,35 @@ fn format_result(bags: Vec<Vec<i64>>) -> String {
 
     //return the result without the the last empty lines and remove the last comma
     result.trim_end_matches("\n").to_string()
+}
+
+// a function to read an int from the user
+pub fn read_int(message: &str) -> i64 {
+    println!("{} ", message);
+    loop {
+        // for ux (user experience)
+        print!("> ");
+
+        //clear the tests buffer so the print combined with the input above works
+        std::io::stdout().flush().unwrap();
+
+        //create a string for the input
+        let mut input = String::new();
+
+        //read the input
+        std::io::stdin().read_line(&mut input).expect("Failed to read from stdin");
+
+        //check if it is parseable into an i64 if not ask again
+        match input.trim().parse::<i64>() {
+            Ok(ok) => return ok,
+            Err(_e) => print!("Bitte gib eine Dezimalzahl ein."),
+        }
+    }
+}
+
+pub fn int_from_str(input:&str) -> i64 {
+    match input.trim().parse::<i64>() {
+        Ok(ok) => return ok,
+        Err(_e) => panic!("File is broken couldn't parse {}.", input),
+    }
 }
