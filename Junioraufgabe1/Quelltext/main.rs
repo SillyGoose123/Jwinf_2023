@@ -106,7 +106,7 @@ fn calculate_the_bags(user_input: Input) -> Vec<Vec<i64>> {
     //fill the result vector with games
     let mut current_bag = 0;
     loop {
-        let current_game_type = give_next_games(&mut game_types);
+        let current_game_type = give_next_game(&mut game_types);
 
         //check if there are no more left
         if current_game_type == -1 {
@@ -129,7 +129,7 @@ fn calculate_the_bags(user_input: Input) -> Vec<Vec<i64>> {
     result
 }
 
-fn give_next_games(game_types: &mut Vec<i64>) -> i64 {
+fn give_next_game(game_types: &mut Vec<i64>) -> i64 {
     //check all game_types for games
     for i in 0..game_types.len() {
         // if there are games left take one and return the game_types

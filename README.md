@@ -1,1 +1,3 @@
-#Bwinf_2023
+# Bwinf_2023
+- Junioraufgabe 1 (Wundertüte)
+- Junioraufgabe 2 (St. Egano)
