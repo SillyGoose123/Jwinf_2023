@@ -1,3 +1,5 @@
+#![feature(ascii_char)]
+
 use std::io::{Write};
 use std::panic;
 use std::path::Path;
@@ -28,7 +30,7 @@ fn main() {
         file_path = get_input_from_user();
     }
 
-    println!("File path: {}", file_path);
+    println!("File path: {}:", file_path);
 
     //read the file
     let mut img = match image::open(&Path::new(&file_path))  {
@@ -40,16 +42,28 @@ fn main() {
     let img_height = img.dimensions().1;
 
 
-    //du keke mach for loop und dann machst du das mit den pixeln
 
     let pixels: Vec<_> = img.get_pixel(0, 0).0.to_vec();
+    //vars for the loop
+    let mut result: Vec<u8> = Vec::new();
+    let mut pos = vec![0,0];
 
+    loop {
+        let current_pixel: Vec<u8> = img.get_pixel(pos[0], pos[1]).0.to_vec();
 
+        //get the ascii value of the current pixels R value
+        result.push(current_pixel[0]);
 
+        //find out were to go next
+        pos[0] = (current_pixel[1] as u32 + pos[0]) % img_width;
+        pos[1] = (current_pixel[2] as u32 + pos[1]) % img_height;
 
+        if current_pixel[1] == 0 && current_pixel[1] == 0 {
+            break;
+        }
+    }
 
-
-
+    println!("Result: {}", get_ascii_string_from_u8_vec(result));
 }
 
 fn get_input_from_user() -> String {
@@ -72,4 +86,39 @@ fn get_input_from_user() -> String {
             Err(_e) => print!("Bitte gib einen Path ein."),
         }
     }
+}
+
+fn get_ascii_string_from_u8_vec(input: Vec<u8>) -> String {
+    let mut result = String::new();
+
+    for i in 0..input.len() {
+        let current_letter = input[i].as_ascii();
+        if !current_letter.is_none() {
+            result.push(current_letter.unwrap().as_char());
+        } else {
+            //check for special german characters
+            result.push_str(match input[i] {
+                195 => match input[i + 1] {
+                    132 => "Ä",
+                    164 => "ä",
+                    150 => "Ö",
+                    182 => "ö",
+                    156 => "Ü",
+                    188 => "ü",
+                    159 => "ß",
+                    _ => "",
+                }
+                252 => "ü",
+                228 => "ä",
+                246 => "ö",
+                223 => "ß",
+                214 => "Ö",
+                220 => "Ü",
+                196 => "Ä",
+                _ => "",
+            });
+        }
+    }
+
+    result
 }
