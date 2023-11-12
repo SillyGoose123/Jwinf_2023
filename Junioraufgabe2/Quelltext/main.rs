@@ -58,7 +58,7 @@ fn main() {
         pos[0] = (current_pixel[1] as u32 + pos[0]) % img_width;
         pos[1] = (current_pixel[2] as u32 + pos[1]) % img_height;
 
-        if current_pixel[1] == 0 && current_pixel[1] == 0 {
+        if current_pixel[1] == 0 && current_pixel[2] == 0 {
             break;
         }
     }
