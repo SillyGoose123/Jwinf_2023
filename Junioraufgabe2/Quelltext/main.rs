@@ -4,7 +4,7 @@ use std::io::{Write};
 use std::panic;
 use std::path::Path;
 use std::process::exit;
-use image::{GenericImageView, Rgb, Rgba};
+use image::{GenericImageView};
 
 fn main() {
     //custom error handling
@@ -33,17 +33,16 @@ fn main() {
     println!("File path: {}:", file_path);
 
     //read the file
-    let mut img = match image::open(&Path::new(&file_path))  {
+    let img = match image::open(&Path::new(&file_path))  {
         Ok(ok) => ok,
         Err(_e) => panic!("Error: Could not open file."),
     };
 
+
+    //get the width and height of the image
     let img_width = img.dimensions().0;
     let img_height = img.dimensions().1;
 
-
-
-    let pixels: Vec<_> = img.get_pixel(0, 0).0.to_vec();
     //vars for the loop
     let mut result: Vec<u8> = Vec::new();
     let mut pos = vec![0,0];
@@ -58,6 +57,7 @@ fn main() {
         pos[0] = (current_pixel[1] as u32 + pos[0]) % img_width;
         pos[1] = (current_pixel[2] as u32 + pos[1]) % img_height;
 
+        //check for end
         if current_pixel[1] == 0 && current_pixel[2] == 0 {
             break;
         }
@@ -91,7 +91,9 @@ fn get_input_from_user() -> String {
 fn get_ascii_string_from_u8_vec(input: Vec<u8>) -> String {
     let mut result = String::new();
 
+    //iterate over the input
     for i in 0..input.len() {
+        //check if the current byte is a valid ascii char
         let current_letter = input[i].as_ascii();
         if !current_letter.is_none() {
             result.push(current_letter.unwrap().as_char());
